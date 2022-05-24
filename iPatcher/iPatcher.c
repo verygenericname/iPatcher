@@ -155,23 +155,6 @@ int get_securerom_patch(void *buf, size_t len) {
     return 0;
 }
 
-int get_debugenabled_patch(void* buf, size_t len) {
-	printf("getting %s()\n", __FUNCTION__);
-
-	find = memmem(buf,len,"debug-enabled", 13);
-    if (!find) {
-        printf("[-] Failed to find debug-enabled string\n");
-        return -1;
-    }
-
-    ref = xref64(buf,0,len,(addr_t)GET_OFFSET(find, buf));
-    ref = ref + 0x28;
-    *(uint32_t *) (buf + ref) = bswap32(0x200080D2); // mov x0, #1
-
-    printf("[+] Enabled kernel debug\n");
-	return 0;
-}
-
 uint64_t BIT_RANGE(uint64_t v, int begin, int end) { return ((v)>>(begin)) % (1 << ((end)-(begin)+1)); } // tihmstar stuff
 uint64_t SET_BITS(uint64_t v, int begin) { return ((v)<<(begin));} // tihmstar stuff
 
