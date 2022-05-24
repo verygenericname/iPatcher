@@ -257,7 +257,6 @@ int main(int argc, char* argv[]) {
     get_rsa_patch(buf,len);
 
     if (!ibss) {
-        get_debugenabled_patch(buf,len);
 
         for(int i = 1; i < argc; i++) {
 	    if(strncmp(argv[i],"-s",2) == 0) {
