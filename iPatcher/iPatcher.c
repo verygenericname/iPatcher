@@ -43,43 +43,6 @@ int get_iboot_version(void* buf, size_t len) {
 	return atoi(version);
 }
 
- int get_rsa_patch(void* buf, size_t len) {
-	int iboot_version = get_iboot_version(buf, len);
-	printf("getting %s()\n", __FUNCTION__);
-
-    // iOS 9.x and later
-    if (iboot_version == 2817) {
-        find = memmem(buf,len,"\x08\x69\x88\x72", 0x4);
-        if (!find) {
-            printf("[-] Failed to find MOVK W8, #0x4348\n");
-            exit(1);
-        }
-    }
-
-    // iOS 8.x
-    else if (iboot_version == 2261){
-        find = memmem(buf,len,"\x0A\x69\x88\x72", 0x4);
-        if (!find) {
-            printf("[-] Failed to find MOVK W10, #0x4348\n");
-            exit(1);
-        }
-    }
-
-    // iOS 7.x
-    else if (iboot_version == 1940){
-        find = memmem(buf,len,"\x0B\x69\x88\x72", 0x4);
-        if (!find) {
-            printf("[-] Failed to find MOVK W11, #0x4348\n");
-            exit(1);
-        }
-    }
-
-    //any other version
-    else {
-        printf("Version not supported\n");
-        exit(1);
-    }
-
     ref = bof64(buf, 0, (addr_t)GET_OFFSET(find, buf));
     *(uint32_t *) (buf + ref) = bswap32(0x000080D2); // mov x0, #0
     *(uint32_t *) (buf + ref + 0x4) = bswap32(0xC0035FD6); // ret
